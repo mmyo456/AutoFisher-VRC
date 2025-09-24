@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VRChatAutoFishing", "VRChatAutoFishing\VRChatAutoFishing.csproj", "{D11B0F8F-C1A3-4779-95ED-D6C76B5E0758}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D11B0F8F-C1A3-4779-95ED-D6C76B5E0758}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D11B0F8F-C1A3-4779-95ED-D6C76B5E0758}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D11B0F8F-C1A3-4779-95ED-D6C76B5E0758}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D11B0F8F-C1A3-4779-95ED-D6C76B5E0758}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E4B88A33-5E31-4DEC-8B13-17006051678A}
+	EndGlobalSection
+EndGlobal

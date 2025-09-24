@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <ApplicationIcon>app.ico</ApplicationIcon>
+    <AssemblyTitle>VRChat自动钓鱼工具</AssemblyTitle>
+    <AssemblyDescription>合法的游戏辅助工具</AssemblyDescription>
+    <AssemblyCompany>个人开发</AssemblyCompany>
+    <AssemblyProduct>VRChatAutoFishing</AssemblyProduct>
+    <AssemblyCopyright>Copyright © arcxingye 2024</AssemblyCopyright>
+    <AssemblyVersion>1.5.0.0</AssemblyVersion>
+    <FileVersion>1.5.0.0</FileVersion>
+
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <PublishReadyToRun>true</PublishReadyToRun>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="app.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Remove="Resources\help_image1.png" />
+    <None Remove="Resources\help_image2.png" />
+    <None Remove="Resources\help_image3.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\help_image1.png" />
+    <EmbeddedResource Include="Resources\help_image2.png" />
+    <EmbeddedResource Include="Resources\help_image3.png" />
+  </ItemGroup>
+
+</Project>
