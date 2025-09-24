@@ -16,8 +16,8 @@ namespace VRChatAutoFishing
 
         private void SetupHelpForm()
         {
-            this.Text = "使用说明 - 自动钓鱼v1.5.0";
-            this.ClientSize = new Size(610, 950); // 增加高度以容纳第四步
+            this.Text = "使用说明";
+            this.ClientSize = new Size(610, 950);
             this.StartPosition = FormStartPosition.CenterParent;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
