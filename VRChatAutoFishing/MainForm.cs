@@ -136,7 +136,7 @@ namespace VRChatAutoFishing
                     {
                         _showingFishCount = true;
                         _lastStatusSwitchTime = DateTime.Now;
-                        UpdateStatusText($"已钓次数:{_fishCount}");
+                        UpdateStatusText($"已钓:{_fishCount}");
                     }
                 }
             }
