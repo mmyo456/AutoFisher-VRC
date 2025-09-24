@@ -17,35 +17,67 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
+    - name: Clean publish directory
+      run: |
+        if (Test-Path ./publish) {
+          Remove-Item -Recurse -Force ./publish
+        }
+
     - name: Restore dependencies
       run: dotnet restore
 
-    - name: Build solution
-      run: dotnet build --configuration ${{ env.BUILD_CONFIGURATION }} --no-restore
+    - name: Build with detailed output
+      run: |
+        dotnet build --configuration ${{ env.BUILD_CONFIGURATION }} --verbosity detailed
 
-    - name: Publish application
+    - name: Publish with all dependencies
       run: |
         dotnet publish VRChatAutoFishing/VRChatAutoFishing.csproj `
           --configuration ${{ env.BUILD_CONFIGURATION }} `
           --output ./publish `
+          --runtime win-x64 `
           --self-contained true `
           -p:PublishSingleFile=false `
-          -p:IncludeNativeLibrariesForSelfExtract=true
+          -p:IncludeNativeLibrariesForSelfExtract=true `
+          -p:DebugType=None `
+          -p:DebugSymbols=false
 
-    - name: Create release
+    - name: Verify published files
+      run: |
+        Write-Host "发布目录内容:"
+        Get-ChildItem ./publish -Recurse | ForEach-Object { Write-Host $_.FullName }
+        Write-Host "文件总数: $(@(Get-ChildItem ./publish -Recurse | Where-Object { !$_.PSIsContainer }).Count)"
+
+    - name: Create ZIP archive
+      run: |
+        $version = $env:GITHUB_REF_NAME -replace '^v',''
+        Compress-Archive -Path ./publish/* -DestinationPath "VRChatAutoFishing-$version.zip" -CompressionLevel Optimal
+
+    - name: Create GitHub Release
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
       with:
         files: |
-          publish/*
+          VRChatAutoFishing-*.zip
+          publish/VRChatAutoFishing.exe
         generate_release_notes: true
+        body: |
+          自动构建的 VRChat 自动钓鱼工具 Release。
+          
+          包含文件：
+          - 主程序：VRChatAutoFishing.exe
+          - 所有依赖文件
+          - 资源文件
+          
+          使用说明：
+          1. 下载 ZIP 文件并解压
+          2. 运行 VRChatAutoFishing.exe
+          3. 确保 VRChat 已开启 OSC 和日志
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
