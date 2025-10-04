@@ -1,0 +1,76 @@
+name: CI - Build
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      matrix:
+        include:
+          - name: win-x64
+            runner: windows-latest
+            rid: win-x64
+            archive: zip
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: (Windows) Set code page to 936
+        if: matrix.rid == 'win-x64'
+        run: chcp 936
+
+      - name: (Windows) Fix encoding (GBK -> UTF8)
+        if: matrix.rid == 'win-x64'
+        working-directory: ${{ github.workspace }}
+        run: pwsh -NoProfile -NonInteractive -Command "& './tools/fix-encoding.ps1' -Path . -WhatIf:$false"
+
+      - name: Restore
+        working-directory: VRChatAutoFishing
+        run: dotnet restore "VRChatAutoFishing.csproj"
+
+      - name: Build
+        working-directory: VRChatAutoFishing
+        run: dotnet build "VRChatAutoFishing.csproj" --configuration Release --no-restore
+
+      - name: Publish single-file self-contained
+        working-directory: VRChatAutoFishing
+        run: |
+          dotnet publish "VRChatAutoFishing.csproj" -c Release -r ${{ matrix.rid }} --self-contained false -p:PublishSingleFile=true -p:DebugType=None -p:DebugSymbols=false -o ./publish
+
+      - name: Package artifact
+        working-directory: VRChatAutoFishing
+        shell: pwsh
+        run: |
+          Write-Host 'Checking publish output...'
+          if (-not (Test-Path -Path ./publish)) {
+            Write-Host 'Publish directory not found. Listing repository:'
+            Get-ChildItem -Force -Recurse | Select-Object -First 100
+            exit 1
+          }
+          $exe = Get-ChildItem -Path ./publish -Recurse -Filter '*.exe' | Select-Object -First 1
+          if (-not $exe) {
+            Write-Host 'No exe found in publish directory. Contents of publish:'
+            Get-ChildItem -Path ./publish -Recurse -Force | Select-Object -First 200
+            exit 1
+          }
+          $dest = Join-Path $env:GITHUB_WORKSPACE ('release-' + "${{ matrix.name }}" + '.zip')
+          Write-Host "Compressing executable $($exe.FullName) to $dest"
+          Compress-Archive -Path $exe.FullName -DestinationPath $dest -Force
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ matrix.name }}
+          path: ${{ github.workspace }}/release-${{ matrix.name }}.zip
+
+  # release job removed: workflow now only builds and uploads artifacts
